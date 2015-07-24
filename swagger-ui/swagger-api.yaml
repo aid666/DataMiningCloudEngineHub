@@ -185,13 +185,13 @@ paths:
             items:
               $ref: '#/definitions/WaitingProcessMetadata'
 
-  /queue/{wpKey}:
+  /processes/{pKey}/checklogs:
     get:
       tags:
-      - queue
-      summary: Check the check log of a waiting process
+      - Processes
+      summary: Check the check log of a process
       parameters:
-      - name: wpKey
+      - name: pKey
         in: path
         type: string
       responses:
@@ -203,10 +203,10 @@ paths:
               $ref: '#/definitions/WaitingProcessCheckLog'
     post:
       tags:
-      - queue
-      summary: Add a check log of a waiting process
+      - Processes
+      summary: Add a check log of a process
       parameters:
-      - name: wpKey
+      - name: pKey
         in: path
         type: string
       - name: body
