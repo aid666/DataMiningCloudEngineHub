@@ -1,15 +1,15 @@
 swagger: '2.0'
 info:
   version: 0.0.1
-  title: DataMiningCloud Engine Service
-  description: An API specification of DataMiningCloud Engine service based on swagger-2.0 specification
+  title: Engine Hub Service
+  description: An API specification of Engine Hub Service based on swagger-2.0 specification
   contact:
-    name: DataMiningCloud API team
+    name: Aid
     email: aid666@gmail.com
   license:
     name: MIT
     url: 'http://opensource.org/licenses/MIT'
-basePath: /engine
+basePath: /hub
 schemes:
   - http
 consumes:
@@ -38,7 +38,7 @@ paths:
             items:
               $ref: '#/definitions/ProcesserAlgorithm'
 
-  /ad_hoc:
+  /adhoc:
     post:
       tags:
       - Ad_hoc
@@ -53,7 +53,7 @@ paths:
           schema:
             $ref: '#/definitions/ProcessMetadata'
 
-  /ad_hoc/{exeKey}:
+  /adhoc/{exeKey}:
     get:
       tags:
       - Ad_hoc
@@ -172,13 +172,60 @@ paths:
       responses:
         204:
           description: OK
+  /queue:
+    get:
+      tags:
+      - queue
+      summary: Query the queue of process which waiting to be running.
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/WaitingProcessMetadata'
 
-  /processes/{resultKey}:
+  /queue/{wpKey}:
+    get:
+      tags:
+      - queue
+      summary: Check the check log of a waiting process
+      parameters:
+      - name: wpKey
+        in: path
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/WaitingProcessCheckLog'
+    post:
+      tags:
+      - queue
+      summary: Add a check log of a waiting process
+      parameters:
+      - name: wpKey
+        in: path
+        type: string
+      - name: body
+        in: body
+        schema:
+          $ref: '#/definitions/WaitingProcessCheckLog'
+      responses:
+        204:
+          description: OK
+        404:
+          description: No such WP in the queue, this could be an error, or the queue had been marked as running.
+
+
+  /processes/{processKey}:
     get:
       tags:
       - Processes
       parameters:
-      - name: resultKey
+      - name: processKey
         in: path
         type: string
       responses:
@@ -187,12 +234,12 @@ paths:
           schema:
             $ref: '#/definitions/ProcessStatus'
 
-  /processes/{resultKey}/result:
+  /processes/{processKey}/result:
     get:
       tags:
       - Processes
       parameters:
-        - name: resultKey
+        - name: processKey
           in: path
           type: string
       responses:
@@ -301,15 +348,49 @@ definitions:
 
   ProcessAdhocExe:
     properties:
-      key:
-        type: string
+      flow:
+        $ref: '#/definitions/ProcessFlow'
+      data:
+        $ref: '#/definitions/DMData'
 
   ProcessFlow:
     properties:
       key:
         type: string
+      processers:
+        type: array
+        items:
+          $ref: '#/definitions/Processer'
+
+  Processer:
+    properties:
+      algKey:
+        type: string
+      model:
+        $ref: '#/definitions/DMData'
 
   ProcessFlowMetadata:
     properties:
       key:
+        type: string
+
+  WaitingProcessMetadata:
+    properties:
+      key:
+        type: string
+      algorithms:
+        type: array
+        items:
+          type: string
+
+  WaitingProcessCheckLog:
+    properties:
+      datetime:
+        type: string
+      status:
+        description: DENY, ACCEPT
+        type: string
+      description:
+        type: string
+      checkerKey:
         type: string

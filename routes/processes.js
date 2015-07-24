@@ -18,7 +18,10 @@ var processStatuses = {
 
 router.post('', function(req, res, next) {
   console.log("generate new process");
-  res.json({"procKey":1});
+  res.json(
+    {
+      "procKey":1
+    });
 });
 
 /* GET flow processStatuses. */

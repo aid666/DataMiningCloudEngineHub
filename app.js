@@ -5,12 +5,19 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var flow = require('./routes/flow');
+var adhoc = require('./routes/adhoc');
 var algs = require('./routes/algs');
+var flow = require('./routes/flow');
 var processes = require('./routes/processes');
+var queue = require('./routes/queue');
+
+var Datastore = require('nedb')
+
+processData = new Datastore();
+processMetadata = new Datastore({filename: './procMetadata.db', autoload:true});
+queue_check_logs = new Datastore({filename: './procCheckLogs.db', autoload:true});
 
 var app = express();
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -36,9 +43,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/hub/', flow);
+app.use('/hub/adhoc', adhoc);
 app.use('/hub/algorithms', algs);
+app.use('/hub/flow', flow);
 app.use('/hub/processes', processes);
+app.use('/hub/queue', queue);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
