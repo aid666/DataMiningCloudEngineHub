@@ -43,11 +43,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/hub/adhoc', adhoc);
-app.use('/hub/algorithms', algs);
-app.use('/hub/flow', flow);
-app.use('/hub/processes', processes);
-app.use('/hub/queue', queue);
+//app.use('/hub/adhoc', adhoc);
+//app.use('/hub/algorithms', algs);
+//app.use('/hub/flow', flow);
+//app.use('/hub/processes', processes);
+//app.use('/hub/queue', queue);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
