@@ -1,19 +1,25 @@
 var express = require('express');
-var router = express.Router();
+var shortid = require('shortid');
 
-var keyGenerator = 1;
+var router = express.Router();
 
 router.post('', function(req, res, next) {
   var adhocRequest = req.body;
-  var key = 'eva-proc-' + keyGenerator++;
+  var key = shortid.generate();
 
-  //Save process
-  var adhocProcess = {
-    procKey: key,
-    flow: adhocRequest.flow,
+  //Save process data
+  var adhocProcessData = {
+    _id: key,
     data: adhocRequest.data
   }
-  //processData.insert(adhocProcessa);
+  processDataDB.insert(adhocProcessData);
+
+  //Save process flow
+  var adhocProcessFlow = {
+    _id: key,
+    flow: adhocRequest.flow
+  }
+  processFlowDB.insert(adhocProcessFlow);
 
   //populate a process metadata
   var algKeys = [];
@@ -21,12 +27,12 @@ router.post('', function(req, res, next) {
     algKeys.push(adhocRequest.flow.processers[i].algKey);
   }
   var adhocProcessMeta = {
-    procKey: key,
+    _id: key,
     status: "PENDING",
     algorithms: algKeys
   }
   console.log("Add to queue metadata: " + JSON.stringify(adhocProcessMeta))
-  processMetadata.insert(adhocProcessMeta);
+  processMetadataDB.insert(adhocProcessMeta);
 
   res.json(adhocProcessMeta);
 });

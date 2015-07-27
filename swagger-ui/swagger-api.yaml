@@ -185,6 +185,36 @@ paths:
             items:
               $ref: '#/definitions/WaitingProcessMetadata'
 
+  /processes/{pKey}/flow:
+    get:
+      tags:
+      - Processes
+      summary: Get the flow of the process
+      parameters:
+      - name: pKey
+        in: path
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ProcessFlow'
+
+  /processes/{pKey}/data:
+    get:
+      tags:
+      - Processes
+      summary: Get the data of the process
+      parameters:
+      - name: pKey
+        in: path
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/DMData'
+
   /processes/{pKey}/checklogs:
     get:
       tags:

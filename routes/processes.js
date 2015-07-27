@@ -1,45 +1,42 @@
 var express = require('express');
 var router = express.Router();
 
-
-var processStatuses = {
-  1:
-    {
-        key: 1,
-        name: "processStatuse 1"
-    },
-  2:
-    {
-        key: 2,
-        name: "processStatuse 2"
+router.get('/:pKey/data', function(req, res, next) {
+  var pKey = req.params.pKey;
+  processDataDB.find({ _id: pKey }, function (err, docs) {
+    if(docs.length > 0){
+      res.json(docs.shift())
+    }else{
+      res.sendStatus(404);
     }
-
-}
-
-router.post('', function(req, res, next) {
-  console.log("generate new process");
-  res.json(
-    {
-      "procKey":1
-    });
-});
-
-/* GET flow processStatuses. */
-router.get('/:key', function(req, res, next) {
-  res.json(processStatuses[req.params.key]);
-});
-
-/* POST process result. */
-router.get('/:key/result', function(req, res, next) {
-  res.json({
-    name: 'Mock Data'
   });
 });
 
+router.get('/:pKey/flow', function(req, res, next) {
+  var pKey = req.params.pKey;
+  processFlowDB.find({ _id: pKey }, function (err, docs) {
+      if(docs.length > 0){
+        res.json(docs.shift())
+      }else{
+        res.sendStatus(404);
+      }
+  });
+});
+
+router.get('/:pKey', function(req, res, next) {
+  var pKey = req.params.pKey;
+  processMetadataDB.find({ _id: pKey }, function (err, docs) {
+      if(docs.length > 0){
+        res.json(docs.shift())
+      }else{
+        res.sendStatus(404);
+      }
+  });
+});
 
 router.get('/:pKey/checklogs', function(req, res, next) {
   var pKey = req.params.pKey;
-  processMetadata.count({ procKey: pKey }, function (err, count) {
+  processMetadataDB.count({ _id: pKey }, function (err, count) {
     if( count > 0 ){
       queue_check_logs.find({ procKey: pKey }, function (err, logs){
         res.json(logs);
@@ -52,7 +49,7 @@ router.get('/:pKey/checklogs', function(req, res, next) {
 
 router.post('/:pKey/checklogs', function(req, res, next) {
   var pKey = req.params.pKey;
-  processMetadata.count({ procKey: pKey }, function (err, count) {
+  processMetadataDB.count({ _id: pKey }, function (err, count) {
     if( count > 0 ){
       var resLog = req.body;
       var checkResult = resLog == null ? null : resLog.status;
@@ -75,10 +72,13 @@ router.post('/:pKey/checklogs', function(req, res, next) {
         //Check the logs, only one ACCEPT can be insert into logs.
         queue_check_logs.count({procKey: pKey, status: 'ACCEPT'}, function (err, count){
           if( count == 0 ){
-            processMetadata.update({procKey: pKey, status: 'PENDING'}, { $set: {status: 'RUNNING'}}, {}, function(err, numReplaced){
-              if(err == null && numReplaced == 1){
-                //Update
-                insertLog();
+            processMetadataDB.update(
+              { _id: pKey, status: 'PENDING' },
+              { $set: {status: 'RUNNING'} },
+              {},
+              function(err, numReplaced){
+                if(err == null && numReplaced == 1){
+                  insertLog();
               }
             })
           }else{
@@ -88,7 +88,6 @@ router.post('/:pKey/checklogs', function(req, res, next) {
       }else{
         insertLog();
       }
-
     }else{
       res.sendStatus(404);
     }

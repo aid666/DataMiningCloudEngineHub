@@ -13,8 +13,9 @@ var queue = require('./routes/queue');
 
 var Datastore = require('nedb')
 
-processData = new Datastore();
-processMetadata = new Datastore({filename: './procMetadata.db', autoload:true});
+processDataDB = new Datastore();
+processFlowDB = new Datastore();
+processMetadataDB = new Datastore({filename: './procMetadata.db', autoload:true});
 queue_check_logs = new Datastore({filename: './procCheckLogs.db', autoload:true});
 
 var app = express();
