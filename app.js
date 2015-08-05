@@ -15,8 +15,8 @@ var Datastore = require('nedb')
 
 processDataDB = new Datastore();
 processFlowDB = new Datastore();
-processMetadataDB = new Datastore({filename: './procMetadata.db', autoload:true});
-queue_check_logs = new Datastore({filename: './procCheckLogs.db', autoload:true});
+processMetadataDB = new Datastore();
+queue_check_logs = new Datastore();
 
 var app = express();
 // uncomment after placing your favicon in /public
