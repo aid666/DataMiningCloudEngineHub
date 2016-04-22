@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Data Mining Cloud Engine by aid666</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/aid666/EngineHub">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/aid666/EngineHub/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/aid666/EngineHub/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Data Mining Cloud Engine</h1>
+          <p>Hub of mirco-engine</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/aid666">aid666</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="dataminingcloud-engine-hub" class="anchor" href="#dataminingcloud-engine-hub" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DataMiningCloud Engine Hub</h1>
+
+<p>DMC Engine System is a distribution process flow system which deploy and run DataMiningCloud services.</p>
+
+<h2>
+<a id="concepts" class="anchor" href="#concepts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Concepts</h2>
+
+<h3>
+<a id="algorithm" class="anchor" href="#algorithm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Algorithm</h3>
+
+<p>This is the real implementation for the execution. Every node has an algorithm and the model which is the parametrs of this algorithm.</p>
+
+<h3>
+<a id="ad_hoc-execution" class="anchor" href="#ad_hoc-execution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ad_Hoc execution</h3>
+
+<p>For testing a DataMinging Service or a Trainer, there are lots request for the ad_hoc execution, which will not deploy a real ProcessFlow to the engine. So the ad_hoc execution will create a temporary procss flow, add will be removed automatically when the execution is finished.</p>
+
+<h3>
+<a id="deployed-processflow-execution" class="anchor" href="#deployed-processflow-execution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Deployed ProcessFlow execution</h3>
+
+<p>For better performance, a process flow can be deployed to the engine and accept the input the data and handle that.</p>
+
+<h2>
+<a id="archticture" class="anchor" href="#archticture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Archticture</h2>
+
+<p>This is a distribution system which based on Docker and Consul.
+There are 4 blocks:</p>
+
+<p>Hub: Implementation of API service, a API gateway of the engine. And it will use DB to store the history result.</p>
+
+<p>Consul: Wrap and hold dispatchers and agents. And used as datacenter.</p>
+
+<p>Dispatcher: There will be 1+ dispatchers. It will handle a running of a process flow. A process flow is a map of processers. The dispatcher will send the input data as an event to the agent. And the agent will send another result data event to this dispatcher when it finished.</p>
+
+<p>Agent: Will handle the running event. It has a ReST API endpoint including "get algorithm name", "check status" and "handle the input data". Every agent only has one algorithm. But it can hold several processes at the same time.</p>
+
+<h2>
+<a id="process" class="anchor" href="#process" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Process</h2>
+
+<p>A process is an execution of process flow. The hub will declare a process in the waiting queue which marked as PENDING. The dispatcher(s) will query the waiting queue reqeatly, if there have empty slot could be use, the dispatcher will put that process flow into the slot, mark it as RUNNING and call other engine agents to running the process flow. If the process is completed, the dispatcher will mark it as FINISHED. All status and running log data will be record via Hub service.</p>
+
+<h2>
+<a id="waiting-queue" class="anchor" href="#waiting-queue" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Waiting queue</h2>
+
+<p>The HUB have a waiting queue which can be access via ReST API. Dispatchers will query this queue and check the process from old to new.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
